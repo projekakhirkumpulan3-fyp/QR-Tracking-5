@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Bagasi</title>
+
+<style>
+body{
+font-family:Arial;
+text-align:center;
+background:#f2f2f2;
+margin:0;
+padding:0;
+}
+
+.box{
+background:white;
+width:90%;
+max-width:420px;
+margin:80px auto;
+padding:30px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.15);
+}
+
+button,a{
+display:block;
+width:100%;
+margin-top:12px;
+padding:15px;
+border:none;
+border-radius:10px;
+font-size:16px;
+text-decoration:none;
+cursor:pointer;
+}
+
+button{
+background:#007bff;
+color:white;
+}
+
+.mapbtn{
+background:#28a745;
+color:white;
+}
+
+.callbtn{
+background:#ff9800;
+color:white;
+}
+
+#status{
+margin-top:20px;
+font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>📦 Bagasi Dijumpai</h1>
+
+<p><b>Pemilik:</b> Wan Ahnaf</p>
+<p><b>Telefon:</b> 011-39962066</p>
+
+<p>Sila tekan butang di bawah.</p>
+
+<button onclick="lokasi()">Hantar Lokasi</button>
+
+<a class="callbtn" href="tel:01XXXXXXXX">📞 Hubungi Pemilik</a>
+
+<a class="mapbtn" id="maplink" href="#" target="_blank">🗺️ Buka Lokasi Dalam Map</a>
+
+<p id="status"></p>
+
+</div>
+
+<script>
+function lokasi(){
+
+document.getElementById("status").innerHTML =
+"📍 Sedang ambil lokasi...";
+
+navigator.geolocation.getCurrentPosition(
+
+function(pos){
+
+let lat = pos.coords.latitude;
+let long = pos.coords.longitude;
+
+document.getElementById("maplink").href =
+"https://www.google.com/maps?q=" + lat + "," + long;
+
+document.getElementById("status").innerHTML =
+"✅ Lokasi berjaya dikesan.";
+
+},
+
+function(error){
+
+document.getElementById("status").innerHTML =
+"❌ Gagal ambil lokasi.";
+
+}
+
+);
+
+}
+</script>
+
+</body>
+</html>
