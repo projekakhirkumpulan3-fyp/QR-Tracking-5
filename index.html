@@ -1,59 +1,49 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QR Bagasi</title>
+<title>QR Luggage</title>
 
 <style>
 body{
-font-family:Arial;
-text-align:center;
-background:#f2f2f2;
-margin:0;
-padding:0;
+  font-family:Arial;
+  text-align:center;
+  background:#f2f2f2;
+  margin:0;
+  padding:0;
 }
-
 .box{
-background:white;
-width:90%;
-max-width:420px;
-margin:80px auto;
-padding:30px;
-border-radius:15px;
-box-shadow:0 5px 15px rgba(0,0,0,0.15);
+  background:white;
+  width:90%;
+  max-width:420px;
+  margin:80px auto;
+  padding:30px;
+  border-radius:15px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.15);
 }
-
 button,a{
-display:block;
-width:100%;
-margin-top:12px;
-padding:15px;
-border:none;
-border-radius:10px;
-font-size:16px;
-text-decoration:none;
-cursor:pointer;
+  display:block;
+  width:100%;
+  margin-top:12px;
+  padding:15px;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  text-decoration:none;
+  cursor:pointer;
 }
-
 button{
-background:#007bff;
-color:white;
+  background:#007bff;
+  color:white;
 }
-
-.mapbtn{
-background:#28a745;
-color:white;
-}
-
 .callbtn{
-background:#ff9800;
-color:white;
+  background:#ff9800;
+  color:white;
 }
-
 #status{
-margin-top:20px;
-font-weight:bold;
+  margin-top:20px;
+  font-weight:bold;
 }
 </style>
 </head>
@@ -61,55 +51,52 @@ font-weight:bold;
 <body>
 
 <div class="box">
+  <h1>📦 Luggage Found</h1>
+  <p><b>Owner:</b> Wan Ahnaf</p>
+  <p><b>Phone:</b> 011-39962066</p>
+  <p>Please press the button below.</p>
 
-<h1>📦 Bagasi Dijumpai</h1>
+  <button id="btnLocation">Send Location</button>
+  <a class="callbtn" href="tel:01139962066">📞 Call Owner</a>
 
-<p><b>Pemilik:</b> Wan Ahnaf</p>
-<p><b>Telefon:</b> 011-39962066</p>
-
-<p>Sila tekan butang di bawah.</p>
-
-<button onclick="lokasi()">Hantar Lokasi</button>
-
-<a class="callbtn" href="tel:01XXXXXXXX">📞 Hubungi Pemilik</a>
-
-<a class="mapbtn" id="maplink" href="#" target="_blank">🗺️ Buka Lokasi Dalam Map</a>
-
-<p id="status"></p>
-
+  <p id="status"></p>
 </div>
 
 <script>
-function lokasi(){
+document.getElementById("btnLocation").addEventListener("click", function() {
 
-document.getElementById("status").innerHTML =
-"📍 Sedang ambil lokasi...";
+  // Pop-up confirmation
+  if (!confirm("Are you sure you want to send your current location to the owner?")) {
+    return;
+  }
 
-navigator.geolocation.getCurrentPosition(
+  if (!navigator.geolocation) {
+    document.getElementById("status").innerText = "Geolocation is not supported by this browser.";
+    return;
+  }
 
-function(pos){
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      let lat = pos.coords.latitude;
+      let long = pos.coords.longitude;
 
-let lat = pos.coords.latitude;
-let long = pos.coords.longitude;
-
-document.getElementById("maplink").href =
-"https://www.google.com/maps?q=" + lat + "," + long;
-
-document.getElementById("status").innerHTML =
-"✅ Lokasi berjaya dikesan.";
-
-},
-
-function(error){
-
-document.getElementById("status").innerHTML =
-"❌ Gagal ambil lokasi.";
-
-}
-
-);
-
-}
+      fetch("https://script.google.com/macros/s/AKfycbyTp1DgXr-mSYDKfXVPoG4eNXKH22qSFn8SDdFwQDA6W-u_iIrWSBO-DSvRb435Ec5o/exec", {
+        method: "POST",
+        body: JSON.stringify({ latitude: lat, longitude: long })
+      })
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("status").innerText = "Location successfully sent!";
+      })
+      .catch(err => {
+        document.getElementById("status").innerText = "Error sending location.";
+      });
+    },
+    function(err) {
+      document.getElementById("status").innerText = "Location permission denied.";
+    }
+  );
+});
 </script>
 
 </body>
